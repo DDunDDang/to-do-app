@@ -1,0 +1,47 @@
+= To-Do Application
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Table of Contents
+:source-highlighter: prettify
+
+Song Jun Sang <thdwns0331@gmail.com>
+
+v1.0.0, 2023.04.06
+
+***
+== TodoController
+=== 할일 등록
+.curl-request
+include::{snippets}/post-todo/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-todo/http-request.adoc[]
+
+.request-fields
+include::{snippets}/post-todo/request-fields.adoc[]
+
+.http-response
+include::{snippets}/post-todo/http-response.adoc[]
+
+.response-header
+include::{snippets}/post-todo/response-headers.adoc[]
+
+=== 특정 할일 수정
+.curl-request
+include::{snippets}/patch-todo/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-todo/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/patch-todo/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/patch-todo/request-fields.adoc[]
+
+.http-response
+include::{snippets}/patch-todo/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-todo/response-fields.adoc[]
