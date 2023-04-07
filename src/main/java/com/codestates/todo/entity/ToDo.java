@@ -13,17 +13,17 @@ import javax.persistence.*;
 public class ToDo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String title;
     @Column(nullable = false, name = "todo_order")
     private int toDoOrder;
     private boolean completed;
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 }

@@ -37,7 +37,7 @@ public class ToDoController {
         return ResponseEntity.created(location).build();
     }
     @PatchMapping("{todo-id}")
-    public ResponseEntity patchToDo(@PathVariable("todo-id") long toDoId, @RequestBody ToDoDto.Patch requestBody) {
+    public ResponseEntity patchToDo(@PathVariable("todo-id") int toDoId, @RequestBody ToDoDto.Patch requestBody) {
         requestBody.setId(toDoId);
 
         ToDo toDo = toDoService.updateToDo(mapper.toDoPatchToToDo(requestBody));
@@ -45,7 +45,7 @@ public class ToDoController {
         return new ResponseEntity<>(mapper.toDoToToDoResponse(toDo), HttpStatus.OK);
     }
     @GetMapping("{todo-id}")
-    public ResponseEntity getToDo(@PathVariable("todo-id") long toDoId) {
+    public ResponseEntity getToDo(@PathVariable("todo-id") int toDoId) {
         ToDo toDo = toDoService.findToDo(toDoId);
 
         return new ResponseEntity<>(mapper.toDoToToDoResponse(toDo), HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ToDoController {
         return new ResponseEntity<>(mapper.toDosToToDoResponses(toDoService.findToDos()), HttpStatus.OK);
     }
     @DeleteMapping("{todo-id}")
-    public ResponseEntity deleteToDo(@PathVariable("todo-id") long toDoId) {
+    public ResponseEntity deleteToDo(@PathVariable("todo-id") int toDoId) {
         toDoService.deleteToDo(toDoId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

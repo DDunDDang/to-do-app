@@ -74,7 +74,7 @@ public class ToDoControllerDocumentationTest {
         given(mapper.toDoPostToToDo(Mockito.any(ToDoDto.Post.class))).willReturn(new ToDo());
 
         ToDo mockResultToDo = new ToDo();
-        mockResultToDo.setId(1L);
+        mockResultToDo.setId(1);
 
         given(toDoService.createToDo(Mockito.any(ToDo.class))).willReturn(mockResultToDo);
 //        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
@@ -118,7 +118,7 @@ public class ToDoControllerDocumentationTest {
                 "}";
 
         ToDoDto.Response response = ToDoDto.Response.builder()
-                .id(1L)
+                .id(1)
                 .title("테스트하기")
                 .todo_order(1)
                 .completed(true)
@@ -132,7 +132,7 @@ public class ToDoControllerDocumentationTest {
 
         ResultActions actions =
                 mockMvc.perform(
-                patch("/{todo-id}", 1L)
+                patch("/{todo-id}", 1)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
@@ -140,7 +140,7 @@ public class ToDoControllerDocumentationTest {
 
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("테스트하기"))
                 .andExpect(jsonPath("$.todo_order").value(1))
                 .andExpect(jsonPath("$.completed").value(true))
@@ -155,7 +155,6 @@ public class ToDoControllerDocumentationTest {
                                 )
                         ), responseFields(
                                 List.of(
-//                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                         fieldWithPath("id").type(JsonFieldType.NUMBER).description("To-Do 식별자"),
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("할 일"),
                                         fieldWithPath("todo_order").type(JsonFieldType.NUMBER).description("우선 순위"),
@@ -169,22 +168,22 @@ public class ToDoControllerDocumentationTest {
     public void getToDoTest() throws Exception {
 
         ToDoDto.Response response = ToDoDto.Response.builder()
-                .id(1L)
+                .id(1)
                 .title("테스트하기")
                 .todo_order(1)
                 .completed(true)
                 .build();
 
-        given(toDoService.findToDo(Mockito.anyLong())).willReturn(new ToDo());
+        given(toDoService.findToDo(Mockito.anyInt())).willReturn(new ToDo());
 
         given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
 
         mockMvc.perform(
-        get("/{todo-id}", 1L) // get("/" + 1L)로 진행하였으나 193번줄 코드 parameterWithName("todo-id")에서 인식하지 못함
+        get("/{todo-id}", 1) // get("/" + 1L)로 진행하였으나 193번줄 코드 parameterWithName("todo-id")에서 인식하지 못함
             .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.title").value("테스트하기"))
             .andExpect(jsonPath("$.todo_order").value(1))
             .andExpect(jsonPath("$.completed").value(true))
@@ -206,13 +205,13 @@ public class ToDoControllerDocumentationTest {
     public void getToDosTest() throws Exception {
         // given
         ToDo toDo1 = new ToDo();
-        toDo1.setId(1L);
+        toDo1.setId(1);
         toDo1.setTitle("테스트하기");
         toDo1.setToDoOrder(1);
         toDo1.setCompleted(true);
 
         ToDo toDo2 = new ToDo();
-        toDo2.setId(2L);
+        toDo2.setId(2);
         toDo2.setTitle("잠자기");
         toDo2.setToDoOrder(2);
         toDo2.setCompleted(false);
@@ -220,13 +219,13 @@ public class ToDoControllerDocumentationTest {
 
         List<ToDoDto.Response> responses = List.of(
                 ToDoDto.Response.builder()
-                        .id(1L)
+                        .id(1)
                         .title("테스트하기")
                         .todo_order(1)
                         .completed(true)
                         .build(),
                 ToDoDto.Response.builder()
-                        .id(2L)
+                        .id(2)
                         .title("잠자기")
                         .todo_order(2)
                         .completed(false)
@@ -267,10 +266,10 @@ public class ToDoControllerDocumentationTest {
     @Test
     @DisplayName("ToDo App 목록 개별 삭제 테스트")
     public void deleteToDoTest() throws Exception {
-        doNothing().when(toDoService).deleteToDo(Mockito.anyLong());
+        doNothing().when(toDoService).deleteToDo(Mockito.anyInt());
 
         mockMvc.perform(
-                        delete("/{todo-id}", 1L)
+                        delete("/{todo-id}", 1)
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("delete-todo", getRequestPreProcessor(), getResponsePreProcessor(),

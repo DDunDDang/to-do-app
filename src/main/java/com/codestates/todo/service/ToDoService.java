@@ -35,7 +35,7 @@ public class ToDoService {
         return toDoRepository.save(findedToDo);
     }
 
-    public ToDo findToDo(long toDoId) {
+    public ToDo findToDo(int toDoId) {
         ToDo findedToDo = findVerifiedToDo(toDoId);
 
         return findedToDo;
@@ -45,7 +45,7 @@ public class ToDoService {
         return toDoRepository.findAll(Sort.by("toDoOrder").ascending());
     }
 
-    public void deleteToDo(long toDoId) {
+    public void deleteToDo(int toDoId) {
         toDoRepository.deleteById(toDoId);
     }
 
@@ -53,7 +53,7 @@ public class ToDoService {
         toDoRepository.deleteAll();
     }
 
-    private ToDo findVerifiedToDo(long toDoId) {
+    private ToDo findVerifiedToDo(int toDoId) {
         Optional<ToDo> toDo = toDoRepository.findById(toDoId);
         ToDo findToto = toDo.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.TODO_NOT_FOUND));
