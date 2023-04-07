@@ -59,15 +59,11 @@ public class ToDoControllerDocumentationTest {
     @DisplayName("ToDo App 목록 생성 테스트")
     public void createToDoTest() throws Exception {
         //given
-//        ToDoDto.Response response = StubData.getResponse();
-
         given(mapper.toDoPostToToDo(Mockito.any(ToDoDto.Post.class))).willReturn(new ToDo());
 
-        ToDo mockResultToDo = new ToDo();
-        mockResultToDo.setId(1);
+        given(toDoService.createToDo(Mockito.any(ToDo.class))).willReturn(new ToDo());
 
-        given(toDoService.createToDo(Mockito.any(ToDo.class))).willReturn(mockResultToDo);
-//        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
+        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(StubData.getResponse());
 
         // when
         ResultActions actions =
@@ -81,17 +77,25 @@ public class ToDoControllerDocumentationTest {
         actions
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", is(startsWith("/"))))
-//                .andExpect(jsonPath("$.id").value(1L))
-//                .andExpect(jsonPath("$.title").value("테스트하기"))
-//                .andExpect(jsonPath("$.todo_order").value(1))
-//                .andExpect(jsonPath("$.completed").value(true))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("테스트하기"))
+                .andExpect(jsonPath("$.todo_order").value(1))
+                .andExpect(jsonPath("$.completed").value(true))
                 .andDo(print())
                 .andDo(document("post-todo",getRequestPreProcessor(), getResponsePreProcessor(),requestFields(
                                 List.of(
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("할 일"),
                                         fieldWithPath("todo_order").type(JsonFieldType.NUMBER).description("우선 순위"),
                                         fieldWithPath("completed").type(JsonFieldType.BOOLEAN).description("시행 여부"))),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("id").type(JsonFieldType.NUMBER).description("To-Do 식별자"),
+                                        fieldWithPath("title").type(JsonFieldType.STRING).description("할 일"),
+                                        fieldWithPath("todo_order").type(JsonFieldType.NUMBER).description("우선 순위"),
+                                        fieldWithPath("completed").type(JsonFieldType.BOOLEAN).description("시행 여부")
+                                )),
                         responseHeaders(headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI"))
+
                 ));
 
     }

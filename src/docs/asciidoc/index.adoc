@@ -27,6 +27,9 @@ include::{snippets}/post-todo/http-response.adoc[]
 .response-header
 include::{snippets}/post-todo/response-headers.adoc[]
 
+.response-fields
+include::{snippets}/post-todo/response-fields.adoc[]
+
 === 특정 할일 수정
 .curl-request
 include::{snippets}/patch-todo/curl-request.adoc[]

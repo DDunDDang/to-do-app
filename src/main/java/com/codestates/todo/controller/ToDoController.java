@@ -34,7 +34,7 @@ public class ToDoController {
                 .buildAndExpand(createdToDo.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.status(HttpStatus.CREATED).location(location).body(mapper.toDoToToDoResponse(createdToDo));
     }
     @PatchMapping("{todo-id}")
     public ResponseEntity patchToDo(@PathVariable("todo-id") int toDoId, @RequestBody ToDoDto.Patch requestBody) {
