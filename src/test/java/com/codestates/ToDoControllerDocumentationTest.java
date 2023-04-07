@@ -1,5 +1,6 @@
 package com.codestates;
 
+import com.codestates.data.StubData;
 import com.codestates.todo.dto.ToDoDto;
 import com.codestates.todo.entity.ToDo;
 import com.codestates.todo.mapper.ToDoMapper;
@@ -58,18 +59,7 @@ public class ToDoControllerDocumentationTest {
     @DisplayName("ToDo App 목록 생성 테스트")
     public void createToDoTest() throws Exception {
         //given
-        String content = "{\n" +
-                "\"title\": \"테스트하기\",\n" +
-                "\"todo_order\": 1,\n" +
-                "\"completed\": true\n" +
-                "}";
-
-//        ToDoDto.Response response = ToDoDto.Response.builder()
-//                                .id(1L)
-//                                .title("테스트하기")
-//                                .todo_order(1)
-//                                .completed(true)
-//                                .build();
+//        ToDoDto.Response response = StubData.getResponse();
 
         given(mapper.toDoPostToToDo(Mockito.any(ToDoDto.Post.class))).willReturn(new ToDo());
 
@@ -85,7 +75,7 @@ public class ToDoControllerDocumentationTest {
                         post("/")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(content)
+                                .content(StubData.getCreateContent())
                 );
 
         actions
@@ -110,32 +100,18 @@ public class ToDoControllerDocumentationTest {
     @DisplayName("ToDo App 목록 갱신 테스트")
     public void patchToDoTest() throws Exception {
         // given
-        String content = "{\n" +
-                "    \"id\" : \"1\",\n" +
-                "    \"title\" : \"테스트하기\",\n" +
-                "    \"todo_order\" : 1,\n" +
-                "    \"completed\" : true\n" +
-                "}";
-
-        ToDoDto.Response response = ToDoDto.Response.builder()
-                .id(1)
-                .title("테스트하기")
-                .todo_order(1)
-                .completed(true)
-                .build();
-
         given(mapper.toDoPatchToToDo(Mockito.any(ToDoDto.Patch.class))).willReturn(new ToDo());
 
         given(toDoService.updateToDo(Mockito.any(ToDo.class))).willReturn(new ToDo());
 
-        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
+        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(StubData.getResponse());
 
         ResultActions actions =
                 mockMvc.perform(
                 patch("/{todo-id}", 1)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
+                        .content(StubData.getPatchContent())
                 );
 
         actions
@@ -166,17 +142,9 @@ public class ToDoControllerDocumentationTest {
     @Test
     @DisplayName("ToDo App 목록 개별 조회 테스트")
     public void getToDoTest() throws Exception {
-
-        ToDoDto.Response response = ToDoDto.Response.builder()
-                .id(1)
-                .title("테스트하기")
-                .todo_order(1)
-                .completed(true)
-                .build();
-
         given(toDoService.findToDo(Mockito.anyInt())).willReturn(new ToDo());
 
-        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
+        given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(StubData.getResponse());
 
         mockMvc.perform(
         get("/{todo-id}", 1) // get("/" + 1L)로 진행하였으나 193번줄 코드 parameterWithName("todo-id")에서 인식하지 못함
@@ -204,37 +172,9 @@ public class ToDoControllerDocumentationTest {
     @DisplayName("ToDo App 목록 전체 조회 테스트")
     public void getToDosTest() throws Exception {
         // given
-        ToDo toDo1 = new ToDo();
-        toDo1.setId(1);
-        toDo1.setTitle("테스트하기");
-        toDo1.setToDoOrder(1);
-        toDo1.setCompleted(true);
+        given(toDoService.findToDos()).willReturn(StubData.getToDoList());
 
-        ToDo toDo2 = new ToDo();
-        toDo2.setId(2);
-        toDo2.setTitle("잠자기");
-        toDo2.setToDoOrder(2);
-        toDo2.setCompleted(false);
-
-
-        List<ToDoDto.Response> responses = List.of(
-                ToDoDto.Response.builder()
-                        .id(1)
-                        .title("테스트하기")
-                        .todo_order(1)
-                        .completed(true)
-                        .build(),
-                ToDoDto.Response.builder()
-                        .id(2)
-                        .title("잠자기")
-                        .todo_order(2)
-                        .completed(false)
-                        .build()
-        );
-
-        given(toDoService.findToDos()).willReturn(List.of(toDo1, toDo2));
-
-        given(mapper.toDosToToDoResponses(Mockito.anyList())).willReturn(responses);
+        given(mapper.toDosToToDoResponses(Mockito.anyList())).willReturn(StubData.getResponses());
 
         ResultActions actions =
                 mockMvc.perform(
