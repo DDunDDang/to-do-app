@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -38,8 +37,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
-public class ToDoControllerTest {
+public class ToDoControllerDocumentationTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -167,7 +165,7 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("ToDo App 목록 전체 조회 테스트")
+    @DisplayName("ToDo App 목록 개별 조회 테스트")
     public void getToDoTest() throws Exception {
 
         ToDoDto.Response response = ToDoDto.Response.builder()
@@ -182,7 +180,7 @@ public class ToDoControllerTest {
         given(mapper.toDoToToDoResponse(Mockito.any(ToDo.class))).willReturn(response);
 
         mockMvc.perform(
-        get("/" + 1L)
+        get("/{todo-id}", 1L) // get("/" + 1L)로 진행하였으나 193번줄 코드 parameterWithName("todo-id")에서 인식하지 못함
             .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk())
@@ -190,7 +188,17 @@ public class ToDoControllerTest {
             .andExpect(jsonPath("$.title").value("테스트하기"))
             .andExpect(jsonPath("$.todo_order").value(1))
             .andExpect(jsonPath("$.completed").value(true))
-            .andDo(print());
+            .andDo(print())
+            .andDo(document("get-todo", getRequestPreProcessor(), getResponsePreProcessor(), pathParameters(parameterWithName("todo-id").description("To-Do 식별자")),
+                    responseFields(
+                            List.of(
+                                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("To-Do 식별자"),
+                                    fieldWithPath("title").type(JsonFieldType.STRING).description("할 일"),
+                                    fieldWithPath("todo_order").type(JsonFieldType.NUMBER).description("우선 순위"),
+                                    fieldWithPath("completed").type(JsonFieldType.BOOLEAN).description("시행 여부")
+                            )
+                    )
+            ));
     }
 
     @Test
@@ -218,7 +226,7 @@ public class ToDoControllerTest {
                         .completed(true)
                         .build(),
                 ToDoDto.Response.builder()
-                        .id(1L)
+                        .id(2L)
                         .title("잠자기")
                         .todo_order(2)
                         .completed(false)
@@ -239,6 +247,16 @@ public class ToDoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andDo(print())
+                .andDo(document("get-todos", getRequestPreProcessor(), getResponsePreProcessor(),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("[].id").type(JsonFieldType.NUMBER).description("To-Do 식별자"),
+                                        fieldWithPath("[].title").type(JsonFieldType.STRING).description("할 일"),
+                                        fieldWithPath("[].todo_order").type(JsonFieldType.NUMBER).description("우선 순위"),
+                                        fieldWithPath("[].completed").type(JsonFieldType.BOOLEAN).description("시행 여부")
+                                )
+                        )
+                ))
                 .andReturn();
 
         List list = JsonPath.parse(result.getResponse().getContentAsString()).read("$");
@@ -247,14 +265,18 @@ public class ToDoControllerTest {
     }
 
     @Test
-    @DisplayName("ToDo App 목록 단일 삭제 테스트")
+    @DisplayName("ToDo App 목록 개별 삭제 테스트")
     public void deleteToDoTest() throws Exception {
         doNothing().when(toDoService).deleteToDo(Mockito.anyLong());
 
         mockMvc.perform(
-                        delete("/" + 1L)
+                        delete("/{todo-id}", 1L)
                 )
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-todo", getRequestPreProcessor(), getResponsePreProcessor(),
+                        pathParameters(
+                                parameterWithName("todo-id").description("To-Do 식별자")
+                        )));
 
     }
     @Test
@@ -265,6 +287,7 @@ public class ToDoControllerTest {
         mockMvc.perform(
                         delete("/")
                 )
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-todos", getRequestPreProcessor(), getResponsePreProcessor()));
     }
 }

@@ -7,7 +7,7 @@
 
 Song Jun Sang <thdwns0331@gmail.com>
 
-v1.0.0, 2023.04.06
+v1.0.0, 2023.04.07
 
 ***
 == TodoController
@@ -45,3 +45,57 @@ include::{snippets}/patch-todo/http-response.adoc[]
 
 .response-fields
 include::{snippets}/patch-todo/response-fields.adoc[]
+
+=== 특정 할일 불러오기
+.curl-request
+include::{snippets}/get-todo/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-todo/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/get-todo/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/get-todo/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-todo/response-fields.adoc[]
+
+
+=== 할일 전체 불러오기
+.curl-request
+include::{snippets}/get-todos/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-todos/http-request.adoc[]
+
+.http-response
+include::{snippets}/get-todos/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-todos/response-fields.adoc[]
+
+
+=== 특정 할일 삭제
+.curl-request
+include::{snippets}/delete-todo/curl-request.adoc[]
+
+.http-request
+include::{snippets}/delete-todo/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/delete-todo/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/delete-todo/http-response.adoc[]
+
+=== 할일 전체 삭제
+.curl-request
+include::{snippets}/delete-todos/curl-request.adoc[]
+
+.http-request
+include::{snippets}/delete-todos/http-request.adoc[]
+
+.http-response
+include::{snippets}/delete-todos/http-response.adoc[]
